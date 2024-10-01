@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/cart.css">
+    
+    <title>Košarica</title>
+</head>
+<body>
+    
+    <div id="container" class="container">
+        <div id="filler" class="filler"></div>
+
+            <div id="logo" class="logo">
+                <a href="/">
+                    <img src="/images/logo-red.png" alt="Logo">
+                </a>
+            </div>
+    
+            <div id="header" class="header">
+                <div id="current-category" class="current-category">KOŠARICA</div>
+            </div>
+    
+            <div id="icons" class="icons">
+                <div id="cart" class="cart">
+                    <a href="/cart">
+                        <img src="/images/cart-icon.png" alt="icons">
+                    </a>
+                    <% if (cart) { %>
+                        <%let totalNum = totalCart(cart); %>
+                        <div id="cartAmount" class="cartAmount"><%= totalNum %></div>
+                    <% } else { %>
+                        <div id="cartAmount" class="cartAmount">0</div>
+                    <% } %>
+                </div>
+                <div class="search">
+                    <img src="/images/search-icon.png" alt="search">
+                </div>    
+            </div>
+
+            <% if (!cart || totalCart(cart) == 0) { %>
+                <div id="main-empty" class="main-empty">
+                    <h2>Vaša košarica je prazna.</h2>
+                    <div id="back-home" class="back-home">
+                        <a href="/">Povratak</a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div id="main" class="main">
+                    <div id="item-name" class="item-name">
+                        <h2>Naziv proizvoda</h2>
+                        <% for (let el of cart) { %>
+                            <div id="added-items-<%= el.name %>" class="added-items">
+                                <p> <%= el.name %> </p>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div id="quantity" class="quantity">
+                        <h2>Količina</h2>
+                        <% for (let el of cart) { %>
+                            <div id="values-<%= el.name %>" class="values">
+                                <form action='/cart/remove/<%= el.name %>' method="post">
+                                    <img onclick="this.parentNode.submit(); decrement('<%= el.name %>');" src="/images/minus-icon.png" alt="">
+                                </form>
+                                <div id="<%= el.name %>" class="product-cartAmount">
+                                    <%= el.quantity %>
+                                </div>
+                                <form action='/cart/add/<%= el.name %>' method="post">
+                                    <img onclick="this.parentNode.submit(); increment('<%= el.name %>');" src="/images/plus-icon.png" alt="">
+                                </form>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+    </div> 
+
+    <% function totalCart(cart) { %>
+        <% let total = 0; %>
+        <% for(let el of cart){ %>
+           <% total += parseInt(el.quantity); %>
+        <% } %>
+        <% return total; %>
+     <% } %>
+
+
+</body>
+<script src="/scripts/main.js"></script>
+</html>

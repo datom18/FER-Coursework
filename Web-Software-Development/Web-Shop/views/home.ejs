@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/index.css">
+    
+    <title>Carluxe Premium Automobili</title>
+</head>
+<body>
+
+    <div id="container" class="container">
+        
+        <div id="filler" class="filler"></div>
+
+        <div id="logo" class="logo">
+            <a href="/">
+                <img src="/images/logo-red.png" alt="Logo">
+            </a>
+        </div>
+
+        <div id="header" class="header">
+            <div id="current-category" class="current-category"><%= category %></div>
+        </div>
+
+        <div id="icons" class="icons">
+            <div id="cart" class="cart">
+                <a href="/cart">
+                    <img src="/images/cart-icon.png" alt="icons">
+                </a>
+                <% if (session.cart) { %>
+                    <% let totalNum = totalCart(session.cart); %>
+                    <% if (totalNum === 0) { %>
+                        <div id="cartAmount" class="cartAmount">0</div>
+                    <% } else { %>
+                        <div id="cartAmount" class="cartAmount"><%= totalNum %></div>
+                    <% } %>
+                <% } else { %>
+                        <div id="cartAmount" class="cartAmount">0</div>
+                <% } %>
+            </div>
+            <div class="search">
+                <img src="/images/search-icon.png" alt="search">
+            </div>    
+        </div>
+
+        <div id="welcome" class="welcome">
+            <img src="/images/special-cover.png" alt="Cover">
+            <div class="welcome-text">
+                <h2>DOBRODOŠLI U OAZU PREMIUM VOZILA</h2>
+                <p>Zakoračite u svijet kvalitete i elegancije</p>
+            </div>
+        </div>
+
+        <div id="categories" class="categories">
+
+            <% for(let category of categories) { %>
+                <form class = "form" method="get" action='/home/getProducts/<%= category.name %>'>
+                   <div id="<%= category.name %>" class="category" onclick="this.parentNode.submit();"><%= category.name %></div>
+                </form>
+             <% } %>
+        </div>
+        
+        <div id="products" class="products">
+
+            <% for(let product of products) { %>
+
+                <div class="product">
+                    <div id="product-image-<%= product.name %>" class="product-image">
+                        <img src="<%= product.image %>">
+                        <div class="product-cart">
+                            <form action='/cart/add/<%= product.name %>' method="post">
+                                <input type="hidden" name="quantity" value="1">
+                                <img onclick="this.parentNode.submit(); increment('<%= product.name %>');" src="/images/cart-icon.png">
+                            </form>
+                        </div>
+                        <% if(session.cart) {%>
+                            <% let object = itemInCart(session.cart, product.name) %>
+                            <% if(object !== undefined) { %>
+                                <div id="<%= product.name %>" class="product-cartAmount">
+                                    <%= object.quantity %>
+                                </div>
+                            <% } else {%>
+                                <div id="<%= product.name %>" class="product-cartAmount">0</div>
+                            <% } %>
+                        <% } else {%>
+                                <div id="<%= product.name %>" class="product-cartAmount">0</div>
+                        <% } %>
+                        
+                    </div>
+                    <p><%= product.name %></p>
+                    <p><%= category %></p>
+                </div>
+
+            <% } %>
+
+        </div>
+        
+        <div id="footer" class="footer">
+            <div class="contact">Kontakt</div>
+            <div class="newsletter">Newsletter</div>
+            <div class="subscribe">Pretplati se</div>
+            <p>© 2024 - Carluxe d.o.o.</p>
+        </div>
+    </div>
+
+    <% function itemInCart(cart, name) { %>
+        <% return cart.find(item => item.name === name); } %>
+
+    <% function totalCart(cart) { %>
+      <% let total = 0; %>
+      <% for(let el of cart){ %>
+         <% total += parseInt(el.quantity); %>
+      <% } %>
+      <% return total; %>
+   <% } %>
+
+</body>
+<script src="/scripts/main.js"></script>
+</html>
+
+
